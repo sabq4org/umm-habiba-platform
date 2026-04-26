@@ -1,0 +1,62 @@
+# DigitalOcean App Platform spec
+# Reference: https://docs.digitalocean.com/products/app-platform/reference/app-spec/
+#
+# First-time deploy checklist:
+#   1. In DigitalOcean: Apps > Create App > GitHub > pick this repo.
+#   2. Set the SECRET env vars in the dashboard:
+#        - DATABASE_URL  (Neon/Postgres connection string)
+#        - AUTH_SECRET   (32+ random chars, e.g. `openssl rand -hex 32`)
+#   3. Push the schema to the production database (one-time):
+#        DATABASE_URL="..." npx drizzle-kit push --force
+#      and (optional) seed demo data:
+#        DATABASE_URL="..." npm run db:seed
+
+name: umm-habiba-platform
+region: fra
+
+services:
+  - name: web
+    github:
+      # حدّثي اسم المستودع بعد رفعه إلى GitHub
+      repo: sabq4org/umm-habiba-platform
+      branch: main
+      deploy_on_push: true
+    source_dir: /
+    environment_slug: node-js
+    instance_size_slug: basic-xxs
+    instance_count: 1
+    http_port: 8080
+    build_command: npm ci && npm run build
+    run_command: npm start -- -p 8080
+    envs:
+      - key: NODE_ENV
+        scope: RUN_AND_BUILD_TIME
+        value: production
+      - key: PORT
+        scope: RUN_TIME
+        value: "8080"
+      # Force IPv4 DNS resolution. DigitalOcean App Platform's egress to AWS
+      # IPv6 addresses currently hangs (ETIMEDOUT), which makes the Neon
+      # serverless driver fail. The application also calls
+      # `dns.setDefaultResultOrder("ipv4first")` at startup as a belt-and-
+      # suspenders backup, but setting NODE_OPTIONS here propagates to any
+      # subprocess (e.g. `next start`) before user code runs.
+      - key: NODE_OPTIONS
+        scope: RUN_AND_BUILD_TIME
+        value: "--dns-result-order=ipv4first"
+      - key: DATABASE_URL
+        scope: RUN_AND_BUILD_TIME
+        type: SECRET
+      - key: AUTH_SECRET
+        scope: RUN_AND_BUILD_TIME
+        type: SECRET
+      - key: AUTH_ALLOWED_ORIGINS
+        scope: RUN_TIME
+        value: ""
+    health_check:
+      http_path: /api/healthz
+      initial_delay_seconds: 15
+      period_seconds: 30
+      timeout_seconds: 5
+      success_threshold: 1
+      failure_threshold: 5

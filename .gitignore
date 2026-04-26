@@ -1,0 +1,47 @@
+# dependencies
+node_modules
+.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# next
+.next
+out
+build
+dist
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env (NEVER commit secrets)
+.env
+.env*.local
+.env.development
+.env.production
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# turbo
+.turbo
+
+# drizzle
+drizzle/.cache
+
+# database export (contains real data including password hashes & PII)
+/database-export/
+
+# real student data (PII: names + national IDs) — keep local only
+/scripts/import-data/
