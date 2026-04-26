@@ -1,19 +1,26 @@
 import Link from "next/link";
 import { count } from "drizzle-orm";
-import { Settings as SettingsIcon, Users, ShieldCheck } from "lucide-react";
+import {
+  Settings as SettingsIcon,
+  Users,
+  ShieldCheck,
+  DatabaseBackup,
+} from "lucide-react";
 import { db, schema } from "@/db";
+import { can } from "@/lib/permissions";
 import { requirePermission } from "@/lib/permissions";
 
 export const dynamic = "force-dynamic";
 
 export default async function SettingsPage() {
-  await requirePermission("settings.read");
+  const session = await requirePermission("settings.read");
   const [usersCount] = await db
     .select({ value: count() })
     .from(schema.users);
   const [auditCount] = await db
     .select({ value: count() })
     .from(schema.auditLogs);
+  const canBackup = can(session.role, "backup.read");
 
   return (
     <>
@@ -62,6 +69,15 @@ export default async function SettingsPage() {
             <p>متابعة كل العمليات الحساسة على البيانات.</p>
           </div>
         </Link>
+        {canBackup ? (
+          <Link href="/settings/backup" className="settings-card">
+            <DatabaseBackup size={22} />
+            <div>
+              <h3>النسخ الاحتياطي</h3>
+              <p>تصدير كامل بيانات المنصة أو استعادة نسخة سابقة.</p>
+            </div>
+          </Link>
+        ) : null}
       </section>
 
       <section className="card">

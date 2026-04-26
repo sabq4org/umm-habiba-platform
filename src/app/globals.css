@@ -3129,3 +3129,48 @@ label.form-row textarea {
     break-inside: avoid;
   }
 }
+
+/* Backup & restore page */
+.backup-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 22px;
+  margin-top: 22px;
+}
+
+.backup-grid .card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.backup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.backup-form input[type="file"],
+.backup-form input[type="text"] {
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.95rem;
+}
+
+.backup-form input[type="text"]:focus,
+.backup-form input[type="file"]:focus {
+  outline: 2px solid var(--primary-soft);
+  outline-offset: 1px;
+}
+
+.backup-form .button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}

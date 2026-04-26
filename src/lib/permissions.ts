@@ -38,7 +38,9 @@ export type PermissionKey =
   | "users.read"
   | "users.write"
   | "users.delete"
-  | "export.run";
+  | "export.run"
+  | "backup.read"
+  | "backup.write";
 
 const ADMIN_PERMS: PermissionKey[] = [
   "dashboard.read",
@@ -77,6 +79,8 @@ const ADMIN_PERMS: PermissionKey[] = [
   "users.write",
   "users.delete",
   "export.run",
+  "backup.read",
+  "backup.write",
 ];
 
 const STAFF_PERMS: PermissionKey[] = [
