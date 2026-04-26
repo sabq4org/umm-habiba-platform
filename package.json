@@ -14,7 +14,8 @@
     "db:seed": "tsx src/db/seed.ts",
     "db:export": "tsx scripts/export-db.ts",
     "db:import-students": "tsx scripts/import-students.ts",
-    "db:import-teachers": "tsx scripts/import-teachers.ts"
+    "db:import-teachers": "tsx scripts/import-teachers.ts",
+    "db:purge-fake": "tsx scripts/purge-fake-data.ts"
   },
   "keywords": [],
   "author": "",
