@@ -13,7 +13,8 @@
     "db:studio": "drizzle-kit studio",
     "db:seed": "tsx src/db/seed.ts",
     "db:export": "tsx scripts/export-db.ts",
-    "db:import-students": "tsx scripts/import-students.ts"
+    "db:import-students": "tsx scripts/import-students.ts",
+    "db:import-teachers": "tsx scripts/import-teachers.ts"
   },
   "keywords": [],
   "author": "",
