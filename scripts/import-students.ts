@@ -17,10 +17,9 @@ type StudentRow = {
 async function run() {
   const { db, schema } = await import("../src/db/index");
 
-  const jsonPath = resolve(
-    process.cwd(),
-    "scripts/import-data/grade1-students.json",
-  );
+  // Accept the JSON file as a CLI arg; default to grade1 for back-compat.
+  const arg = process.argv[2] ?? "scripts/import-data/grade1-students.json";
+  const jsonPath = arg.startsWith("/") ? arg : resolve(process.cwd(), arg);
   const rows = JSON.parse(readFileSync(jsonPath, "utf-8")) as StudentRow[];
   console.log(`📂 Loaded ${rows.length} students from ${jsonPath}`);
 
@@ -40,13 +39,17 @@ async function run() {
 
   const missing = sectionsNeeded.filter((s) => !existingSections.has(s));
   if (missing.length > 0) {
+    const wing = (s: string) => {
+      const n = Number(s.split("/")[0]);
+      return ["A", "B", "C", "D"][n - 1] ?? "A";
+    };
     await db.insert(schema.classes).values(
-      missing.map((section, i) => ({
+      missing.map((section) => ({
         grade,
         section,
         academicYear,
         capacity: 35,
-        room: `A-1${(existingClasses.length + i + 1).toString().padStart(2, "0")}`,
+        room: `${wing(section)}-${section.replace("/", "0")}`,
       })),
     );
     console.log(`🏫 Created ${missing.length} new class section(s): ${missing.join(", ")}`);
